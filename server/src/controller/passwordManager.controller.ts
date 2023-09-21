@@ -2,6 +2,7 @@ import type { Response } from "express";
 import PasswordManager from "../models/PasswordManager";
 import asyncHandler from "express-async-handler";
 import { IRequest } from "../types/IRequest";
+import { generateRandomPassword } from "../util/passwordGenerator";
 
 /* 
  @Desc Get all saved passwords from user
@@ -9,7 +10,7 @@ import { IRequest } from "../types/IRequest";
  @Method GET
  */
 const getAll = asyncHandler(async (req: IRequest, res: Response) => {
-  const passwordManager = await PasswordManager.find();
+  const passwordManager = await PasswordManager.find({ user: req.user });
   res.status(200).json(passwordManager);
 });
 
@@ -19,11 +20,13 @@ const getAll = asyncHandler(async (req: IRequest, res: Response) => {
  @Method POST
  */
 const create = asyncHandler(async (req: IRequest, res: Response) => {
-  const { username, websiteUri, password } = req.body;
+  const { username, websiteUri } = req.body;
+  const password = generateRandomPassword();
   const passwordManager = new PasswordManager({
     username,
     websiteUri,
     password,
+    user: req.user,
   });
 
   await passwordManager.save();

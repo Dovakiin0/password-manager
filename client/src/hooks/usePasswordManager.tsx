@@ -2,18 +2,19 @@ import { useEffect, useState } from "react";
 import { client } from "../config/client";
 import useToast from "./useToast";
 import { useManagerStore } from "../store/useManagerStore";
-import { IPassword } from "../types/IPassword";
+import { IPassword, IPasswordRequest } from "../types/IPassword";
 
 export default function usePasswordManager() {
   const [loading, setLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState();
   const { Error, Success } = useToast();
   const {
-    passwords,
+    filteredPasswords,
     setPasswords,
     createPassword,
     updatePassword,
     deletePassword,
+    searchPasswords,
   } = useManagerStore();
 
   useEffect(() => {
@@ -34,13 +35,21 @@ export default function usePasswordManager() {
     }
   };
 
-  const createNewPassword = async (password: IPassword) => {
+  const searchPasswordByQuery = (query: string) => {
+    searchPasswords(query);
+  };
+
+  const createNewPassword = async (
+    password: IPasswordRequest,
+    cb?: () => void,
+  ) => {
     try {
       setLoading(false);
       const response = await client.post("/api/passwords", password);
       if (response.status === 201) {
-        createNewPassword(response.data);
+        createPassword(response.data);
         Success({ message: "Credentials created Successfully!" });
+        cb?.();
       }
     } catch (error: any) {
       Error({ message: error.response.data.message });
@@ -49,7 +58,10 @@ export default function usePasswordManager() {
     }
   };
 
-  const updateExistingPassword = async (_id: string, password: IPassword) => {
+  const updateExistingPassword = async (
+    _id: string,
+    password: IPasswordRequest,
+  ) => {
     try {
       setLoading(false);
       const response = await client.put(`/api/passwords/${_id}`, password);
@@ -80,11 +92,12 @@ export default function usePasswordManager() {
   };
 
   return {
-    passwords,
+    passwords: filteredPasswords,
     loading,
     errors,
     createNewPassword,
     updateExistingPassword,
     deleteExistingPassword,
+    searchPasswordByQuery,
   };
 }

@@ -41,7 +41,7 @@ export default function useAuth() {
     }
   };
 
-  const register = async (userData: IRegisterUser) => {
+  const register = async (userData: IRegisterUser, cb?: () => void) => {
     try {
       setLoading(true);
       const response = await client.post("/api/auth/register", {
@@ -50,6 +50,7 @@ export default function useAuth() {
       });
       if (response.status === 201) {
         setUser(response.data.user);
+        cb?.();
       }
     } catch (err: any) {
       setErrors(err);

@@ -35,7 +35,9 @@ function Register() {
   });
 
   const handleSubmit = (values: IRegisterUser) => {
-    register(values);
+    register(values, () => {
+      navigate("/");
+    });
   };
 
   useEffect(() => {

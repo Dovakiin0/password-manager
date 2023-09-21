@@ -4,3 +4,5 @@ export interface IPassword {
   username: string;
   password: string;
 }
+
+export type IPasswordRequest = Omit<IPassword, "_id">;
