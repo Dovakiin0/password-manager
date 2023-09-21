@@ -5,8 +5,11 @@ import { errorHandler } from "./middlewares/ErrorMiddleware";
 import cookieParser from "cookie-parser";
 import EventEmitter from "events";
 import dotenv from "dotenv";
+import ConnectDatabase from "./config/db";
 
 dotenv.config();
+
+ConnectDatabase();
 
 const PORT = process.env.PORT || 3030;
 

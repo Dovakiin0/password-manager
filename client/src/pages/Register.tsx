@@ -1,16 +1,12 @@
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   Button,
   Card,
   Divider,
-  Image,
   PasswordInput,
   Text,
   TextInput,
   useMantineTheme,
-  Box,
-  Popover,
-  Progress,
 } from "@mantine/core";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
@@ -19,6 +15,7 @@ import { IRegisterUser } from "../types/IUser";
 import useAuth from "../hooks/useAuth";
 
 function Register() {
+  const { register, current, loading } = useAuth();
   const theme = useMantineTheme();
   const navigate = useNavigate();
   const form = useForm<IRegisterUser>({
@@ -38,16 +35,14 @@ function Register() {
   });
 
   const handleSubmit = (values: IRegisterUser) => {
-    // register(values, () => {
-    //   navigate(`/verify`, { state: { email: values.email } });
-    // });
+    register(values);
   };
 
-  // useEffect(() => {
-  //   if (authenticated && current) {
-  //     navigate("/");
-  //   }
-  // }, [authenticated, current]);
+  useEffect(() => {
+    if (current) {
+      navigate("/");
+    }
+  }, [current]);
 
   return (
     <motion.div
@@ -92,12 +87,6 @@ function Register() {
               placeholder="Your Usernam"
               {...form.getInputProps("username")}
             />
-            <TextInput
-              withAsterisk
-              label="Email"
-              placeholder="Your email address"
-              {...form.getInputProps("email")}
-            />
             <PasswordInput
               withAsterisk
               label="Your password"
@@ -111,7 +100,7 @@ function Register() {
               placeholder="Confirm Password"
               {...form.getInputProps("confirm_password")}
             />
-            <Button type="submit" color="cyan" loading={false}>
+            <Button type="submit" color="cyan" loading={loading}>
               Register
             </Button>
           </form>

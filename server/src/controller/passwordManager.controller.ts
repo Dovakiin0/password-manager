@@ -9,7 +9,8 @@ import { IRequest } from "../types/IRequest";
  @Method GET
  */
 const getAll = asyncHandler(async (req: IRequest, res: Response) => {
-  res.status(200).json(req.user);
+  const passwordManager = await PasswordManager.find();
+  res.status(200).json(passwordManager);
 });
 
 /* 

@@ -25,7 +25,7 @@ const login = asyncHandler(async (req: IRequest, res: Response) => {
   if (!user) {
     // if no user found
     res.status(401);
-    throw new Error("Email or password is incorrect");
+    throw new Error("Username or password is incorrect");
   }
 
   if (await user.comparePassword(password)) {
@@ -39,7 +39,6 @@ const login = asyncHandler(async (req: IRequest, res: Response) => {
         expires: new Date(Date.now() + expireDate),
       })
       .json({
-        success: true,
         user: {
           id: user._id,
           username: user.username,
@@ -47,7 +46,7 @@ const login = asyncHandler(async (req: IRequest, res: Response) => {
       });
   } else {
     res.status(401);
-    throw new Error("Email or password incorrect");
+    throw new Error("Username or password incorrect");
   }
 });
 
@@ -72,13 +71,20 @@ const registerUser = asyncHandler(async (req: IRequest, res: Response) => {
 
   await user.save();
 
-  res.status(201).json({
-    success: true,
-    user: {
-      _id: user._id,
-      username: user.username,
-    },
-  });
+  const expireDate = 7 * 24 * 60 * 60 * 1000; // 7 days
+  res
+    .status(200)
+    .cookie("access_token", generateJWT(user._id), {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      expires: new Date(Date.now() + expireDate),
+    })
+    .json({
+      user: {
+        id: user._id,
+        username: user.username,
+      },
+    });
 });
 
 /* 
@@ -88,7 +94,7 @@ const registerUser = asyncHandler(async (req: IRequest, res: Response) => {
 */
 const logout = asyncHandler(async (req: IRequest, res: Response) => {
   res.clearCookie("access_token");
-  res.status(200).json({ success: true, message: "Logged out successfully" });
+  res.status(200).json({ message: "Logged out successfully" });
 });
 
 export { registerUser, login, logout, getMe };

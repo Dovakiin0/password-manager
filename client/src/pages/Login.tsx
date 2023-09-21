@@ -1,9 +1,8 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import {
   Button,
   Card,
   Divider,
-  Image,
   PasswordInput,
   Text,
   TextInput,
@@ -18,7 +17,7 @@ import useAuth from "../hooks/useAuth";
 type Props = {};
 
 function Login({}: Props) {
-  // const { login, loading, current, authenticated } = useAuth();
+  const { login, loading, current } = useAuth();
   const navigate = useNavigate();
   const theme = useMantineTheme();
   const form = useForm<ILoginUser>({
@@ -29,14 +28,14 @@ function Login({}: Props) {
   });
 
   const handleSubmit = (values: ILoginUser) => {
-    // login(values);
+    login(values);
   };
 
-  // useEffect(() => {
-  //   if (authenticated && current) {
-  //     navigate("/");
-  //   }
-  // }, [authenticated, current]);
+  useEffect(() => {
+    if (current) {
+      navigate("/");
+    }
+  }, [current]);
 
   return (
     <motion.div
@@ -85,7 +84,7 @@ function Login({}: Props) {
               label="Password"
               {...form.getInputProps("password")}
             />
-            <Button type="submit" color="cyan" loading={false}>
+            <Button type="submit" color="cyan" loading={loading}>
               Login
             </Button>
           </form>
