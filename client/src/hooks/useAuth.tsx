@@ -50,6 +50,7 @@ export default function useAuth() {
       });
       if (response.status === 201) {
         setUser(response.data.user);
+        console.log(current);
         cb?.();
       }
     } catch (err: any) {

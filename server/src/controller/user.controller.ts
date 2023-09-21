@@ -73,7 +73,7 @@ const registerUser = asyncHandler(async (req: IRequest, res: Response) => {
 
   const expireDate = 7 * 24 * 60 * 60 * 1000; // 7 days
   res
-    .status(200)
+    .status(201)
     .cookie("access_token", generateJWT(user._id), {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",

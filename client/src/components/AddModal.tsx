@@ -18,7 +18,10 @@ function AddModal({ opened, close, createNewPassword }: Props) {
   });
 
   const handleSubmit = (value: IPasswordRequest) => {
-    createNewPassword(value, () => close());
+    createNewPassword(value, () => {
+      close();
+      form.reset();
+    });
   };
 
   return (
@@ -41,7 +44,9 @@ function AddModal({ opened, close, createNewPassword }: Props) {
             label="Website URL"
             {...form.getInputProps("websiteUri")}
           />
-          <Button type="submit">Generate Password</Button>
+          <Button type="submit" color="cyan">
+            Generate Password
+          </Button>
         </form>
       </Modal>
     </>

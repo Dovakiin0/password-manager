@@ -1,4 +1,4 @@
-import express, { Express } from "express";
+import express, { Express, Request, Response } from "express";
 import InjectRoutes from "./routes/router";
 import cors from "cors";
 import { errorHandler } from "./middlewares/ErrorMiddleware";
@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import EventEmitter from "events";
 import dotenv from "dotenv";
 import ConnectDatabase from "./config/db";
+import path from "path";
 
 dotenv.config();
 

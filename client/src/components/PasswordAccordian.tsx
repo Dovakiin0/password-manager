@@ -6,8 +6,9 @@ import {
   TextInput,
 } from "@mantine/core";
 import { useClipboard } from "@mantine/hooks";
-import { IconCopy, IconWorld } from "@tabler/icons-react";
+import { IconCopy, IconEye, IconWorld } from "@tabler/icons-react";
 import { IPassword } from "../types/IPassword";
+import { useState } from "react";
 
 type Props = {
   password: IPassword;
@@ -15,6 +16,7 @@ type Props = {
 };
 
 function PasswordAccordian({ password, copyToClipboard }: Props) {
+  const [togglePassword, setTogglePassword] = useState(false);
   return (
     <Accordion variant="separated">
       <Accordion.Item value="customization">
@@ -26,28 +28,44 @@ function PasswordAccordian({ password, copyToClipboard }: Props) {
             label="Username"
             readOnly={true}
             value={password.username}
-          />
-          <ActionIcon
-            onClick={() =>
-              copyToClipboard(password.username, "Username Copied to clipboard")
+            rightSection={
+              <ActionIcon
+                onClick={() =>
+                  copyToClipboard(
+                    password.username,
+                    "Username Copied to clipboard",
+                  )
+                }
+              >
+                <IconCopy />
+              </ActionIcon>
             }
-          >
-            <IconCopy />
-          </ActionIcon>
+          />
         </Accordion.Panel>
         <Accordion.Panel>
-          <PasswordInput
+          <TextInput
+            type={togglePassword ? "text" : "password"}
             label="Password"
             readOnly={true}
             value={password.password}
-          />
-          <ActionIcon
-            onClick={() =>
-              copyToClipboard(password.password, "Password Copied to clipboard")
+            rightSection={
+              <div className="flex items-center space-x-2 mr-10">
+                <ActionIcon onClick={() => setTogglePassword((prev) => !prev)}>
+                  <IconEye />
+                </ActionIcon>
+                <ActionIcon
+                  onClick={() =>
+                    copyToClipboard(
+                      password.password,
+                      "Password Copied to clipboard",
+                    )
+                  }
+                >
+                  <IconCopy />
+                </ActionIcon>
+              </div>
             }
-          >
-            <IconCopy />
-          </ActionIcon>
+          />
         </Accordion.Panel>
       </Accordion.Item>
     </Accordion>
